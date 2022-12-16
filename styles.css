@@ -1,0 +1,36 @@
+body {
+  font-family: Verdana;
+}
+a {
+  text-decoration: none;
+}
+#list ul {
+  width: 200px;
+}
+#container {
+  display: flex;
+}
+section {
+  display: flex;
+  justify-content: space-around;
+}
+#movie {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 50%;
+}
+#movie img {
+  width: 70%;
+}
+#casting {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+form {
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+}
