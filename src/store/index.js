@@ -3,104 +3,102 @@ import { createStore, applyMiddleware } from 'redux';
 import loggerMiddleware from 'redux-logger';
 import thunk from 'redux-thunk';
 
-const SET_MOVIES = 'SET_MOVIES';
-const SELECT_MOVIE = 'SELECT_MOVIE';
-const SHOWING_CASTING = 'SHOWING_CASTING';
-const SET_CASTING = 'SET_CASTING';
-const ADDING_HERO = 'ADDING_HERO';
-const REMOVE_HERO = 'REMOVE_HERO';
+const SET_USERS = 'SET_USERS';
+const ADD_USER = 'ADD_USER';
+const VIEW_CART = 'VIEW_CART';
+const ADDING_CART = 'ADDING_CART';
+const DELETE_ITEM = 'DELETE_ITEM';
+const SET_CATEGORIES = 'SET_CATEGORIES';
 
-export const setMovies = () => {
+export const setUsers = () => {
   return async (dispatch) => {
-    const movies = (await axios.get('/api/movies')).data;
-    dispatch({ type: SET_MOVIES, movies });
+    const users = (await axios.get('/api/users')).data;
+    dispatch({ type: SET_USERS, users });
+  };
+};
+let count = 0;
+
+export const addingUser = (name) => {
+  return async (dispatch) => {
+    if (!name) name = `Jon Doe(${++count})`;
+    const user = (await axios.post('/api/users', { name })).data;
+    dispatch({ type: ADD_USER, user });
   };
 };
 
-export const selectMovie = (movieId) => {
+export const setCategories = () => {
   return async (dispatch) => {
-    const movie = (await axios.get(`/api/movies/${movieId}`)).data;
-    dispatch({ type: SELECT_MOVIE, movie });
+    const categories = (await axios.get('/api/categories')).data;
+    dispatch({ type: SET_CATEGORIES, categories });
   };
 };
 
-export const showingCasting = () => {
-  return (dispatch) => {
-    dispatch({ type: SHOWING_CASTING });
+export const addingCart = (newEntry) => {
+  return async (dispatch) => {
+    if (!newEntry.userId) {
+      alert('Please Choose User First');
+      return;
+    }
+    const entry = (await axios.post('/api/cart', newEntry)).data;
+    dispatch({ type: ADDING_CART, entry });
   };
 };
 
-export const setCasting = (movieId) => {
+export const viewCart = (userId) => {
   return async (dispatch) => {
-    const castingList = (await axios.get(`/api/casting/${movieId}`)).data;
-    dispatch({ type: SET_CASTING, castingList });
+    const { list, user } = (await axios.get(`/api/cart/${userId}`)).data;
+    dispatch({ type: VIEW_CART, list, user });
   };
 };
 
-export const removeHero = (castingId) => {
+export const removeItem = (userId) => {
   return async (dispatch) => {
-    const curretnCasting = (await axios.delete(`/api/casting/${castingId}`))
-      .data;
-    dispatch({ type: REMOVE_HERO, curretnCasting });
-  };
-};
-
-export const addingHero = (newHero) => {
-  const target = {
-    name: newHero.target.name.value,
-    movieId: newHero.target.movieId.value,
-  };
-  return async (dispatch) => {
-    const casting = (await axios.post('/api/casting/', target)).data;
-    const selectedMovie = (await axios.get(`/api/movies/${target.movieId}`))
-      .data;
-    dispatch({ type: ADDING_HERO, selectedMovie, casting });
+    const list = (await axios.delete(`/api/cart/${userId}`)).data;
+    dispatch({ type: DELETE_ITEM, list });
   };
 };
 
 const initialState = {
-  movies: [],
-  selectedMovie: {},
-  castingList: [],
-  showing: false,
+  users: [],
+  categories: [],
+  cartUser: '',
+  cartList: [],
 };
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case SET_MOVIES:
+    case SET_USERS:
       return {
         ...state,
-        movies: action.movies,
+        users: action.users,
       };
-    case SELECT_MOVIE:
+    case ADD_USER:
       return {
         ...state,
-        selectedMovie: action.movie,
-        castingList: [],
-        showing: false,
+        users: [...state.users, action.user],
       };
-    case SHOWING_CASTING:
+    case SET_CATEGORIES:
       return {
         ...state,
-        showing: !state.showing,
+        categories: action.categories,
       };
-    case SET_CASTING:
+    case ADDING_CART:
       return {
         ...state,
-        castingList: action.castingList,
+        cartList: [...state.cartList, action.entry],
       };
-    case ADDING_HERO:
+    case VIEW_CART:
       return {
         ...state,
-        selectedMovie: action.selectedMovie,
-        castingList: action.casting,
-        showing: true,
+        cartUser: action.user,
+        cartList: action.list,
       };
-    case REMOVE_HERO:
+    case DELETE_ITEM:
       return {
         ...state,
-        castingList: action.curretnCasting,
+        cartList: action.list,
       };
+
     default:
       return state;
   }

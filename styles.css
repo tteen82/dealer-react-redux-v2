@@ -1,36 +1,45 @@
-body {
-  font-family: Verdana;
-}
-a {
-  text-decoration: none;
-}
-#list ul {
-  width: 200px;
-}
-#container {
-  display: flex;
-}
-section {
+#root {
   display: flex;
   justify-content: space-around;
 }
-#movie {
+body {
+  font-family: Verdana;
+}
+#main {
+  width: 40%;
+}
+nav {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem;
+}
+nav a {
+  padding: 0.5rem;
+}
+nav a.selected {
+  background-color: aqua;
+  border-radius: 5px;
+}
+
+#cart {
+  padding: 1rem;
+  width: 15rem;
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 50%;
+  background-color: aquamarine;
 }
-#movie img {
-  width: 70%;
+#cart ul li button {
+  margin-left: 0.5rem;
 }
-#casting {
-  width: 300px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+
+li {
+  padding: 0.5rem;
+  display: block;
 }
-form {
-  display: flex;
-  flex-direction: column;
-  width: 200px;
+
+a {
+  text-decoration: none;
+  color: black;
 }
